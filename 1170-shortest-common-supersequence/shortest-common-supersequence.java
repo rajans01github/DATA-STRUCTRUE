@@ -1,53 +1,34 @@
 class Solution {
-    public String shortestCommonSupersequence(String str1, String str2) {
-        int m = str1.length();
-        int n = str2.length();
+    public String shortestCommonSupersequence(String s, String t) {
+        int n = s.length(), m = t.length();
+        int[][] dp = new int[n + 1][m + 1];
 
-        // Create DP table
-        int[][] dp = new int[m + 1][n + 1];
+        for (int j = 0; j < m; j++)
+            dp[n][j] = m - j;
 
-        // Fill the DP table
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1] + 1; // If characters match
-                } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take max from either previous row or column
-                }
+        for (int i = n - 1; i >= 0; i--) {
+            dp[i][m] = n - i;
+            for (int j = m - 1; j >= 0; j--) {
+                if (s.charAt(i) == t.charAt(j))
+                    dp[i][j] = 1 + dp[i + 1][j + 1];
+                else
+                    dp[i][j] = 1 + Math.min(dp[i + 1][j], dp[i][j + 1]);
             }
         }
 
-        // Build the shortest common supersequence
-        StringBuilder result = new StringBuilder();
-        int i = m, j = n;
-        while (i > 0 && j > 0) {
-            // If characters are the same, add to the result
-            if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
-                result.append(str1.charAt(i - 1));
-                i--;
-                j--;
-            } else if (dp[i - 1][j] > dp[i][j - 1]) { // Move in the direction of the larger dp value
-                result.append(str1.charAt(i - 1));
-                i--;
-            } else {
-                result.append(str2.charAt(j - 1));
-                j--;
-            }
+        StringBuilder res = new StringBuilder();
+        int i = 0, j = 0;
+        while (i < n || j < m) {
+            if (i < n && j < m && s.charAt(i) == t.charAt(j)) {
+                res.append(s.charAt(i));
+                i++; j++;
+            } 
+            else if (i < n && (j == m || dp[i + 1][j] <= dp[i][j + 1]))
+                res.append(s.charAt(i++));
+            else
+                res.append(t.charAt(j++));
         }
 
-        // If there are any remaining characters in str1
-        while (i > 0) {
-            result.append(str1.charAt(i - 1));
-            i--;
-        }
-
-        // If there are any remaining characters in str2
-        while (j > 0) {
-            result.append(str2.charAt(j - 1));
-            j--;
-        }
-
-        // Reverse the result before returning
-        return result.reverse().toString();
+        return res.toString();
     }
 }
