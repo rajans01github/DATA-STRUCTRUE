@@ -1,41 +1,52 @@
 class Solution {
-    private boolean isVowel(char c) {
-        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
-    }
+  // Same as 3305. Count of Substrings Containing Every Vowel and K Consonants I
+  public long countOfSubstrings(String word, int k) {
+    return substringsWithAtMost(word, k) - substringsWithAtMost(word, k - 1);
+  }
 
-    private long atLeastK(String word, int k) {
-        int n = word.length();
-        long ans = 0;
-        int consonants = 0;
-        int left = 0;
-        HashMap<Character, Integer> vowelMap = new HashMap<>();
+  // Return the number of substrings containing every vowel with at most k
+  // consonants.
+  private long substringsWithAtMost(String word, int k) {
+    if (k == -1)
+      return 0;
 
-        for (int right = 0; right < n; right++) {
-            char c = word.charAt(right);
-            if (isVowel(c)) {
-                vowelMap.put(c, vowelMap.getOrDefault(c, 0) + 1);
-            } else {
-                consonants++;
-            }
+    long res = 0;
+    int vowels = 0;
+    int uniqueVowels = 0;
+    Map<Character, Integer> vowelLastSeen = new HashMap<>();
 
-            while (vowelMap.size() == 5 && consonants >= k) {
-                ans += n - right;
-                char leftChar = word.charAt(left);
-                if (isVowel(leftChar)) {
-                    vowelMap.put(leftChar, vowelMap.get(leftChar) - 1);
-                    if (vowelMap.get(leftChar) == 0) {
-                        vowelMap.remove(leftChar);
-                    }
-                } else {
-                    consonants--;
-                }
-                left++;
-            }
+    for (int l = 0, r = 0; r < word.length(); ++r) {
+      if (isVowel(word.charAt(r))) {
+        ++vowels;
+        if (!vowelLastSeen.containsKey(word.charAt(r)) || vowelLastSeen.get(word.charAt(r)) < l)
+          ++uniqueVowels;
+        vowelLastSeen.put(word.charAt(r), r);
+      }
+      while (r - l + 1 - vowels > k) {
+        if (isVowel(word.charAt(l))) {
+          --vowels;
+          if (vowelLastSeen.get(word.charAt(l)) == l)
+            --uniqueVowels;
         }
-        return ans;
+        ++l;
+      }
+      if (uniqueVowels == 5) {
+        // Add substrings containing every vowel with at most k consonants to
+        // the answer. They are
+        // word[l..r], word[l + 1..r], ..., word[min(vowelLastSeen[vowel])..r]
+        final int minVowelLastSeen = Arrays.asList('a', 'e', 'i', 'o', 'u')
+                                         .stream()
+                                         .mapToInt(vowel -> vowelLastSeen.get(vowel))
+                                         .min()
+                                         .getAsInt();
+        res += minVowelLastSeen - l + 1;
+      }
     }
 
-    public long countOfSubstrings(String word, int k) {
-        return atLeastK(word, k) - atLeastK(word, k + 1);
-    }
+    return res;
+  }
+
+  private boolean isVowel(char c) {
+    return "aeiou".indexOf(c) != -1;
+  }
 }
