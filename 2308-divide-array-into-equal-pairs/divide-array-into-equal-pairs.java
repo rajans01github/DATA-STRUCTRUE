@@ -1,16 +1,18 @@
 class Solution {
+
     public boolean divideArray(int[] nums) {
-        Map<Integer, Integer> counter = new HashMap<>();
-        for (int num : nums) {
-            counter.put(num, counter.getOrDefault(num, 0) + 1);
-        }
-        
-        for (int count : counter.values()) {
-            if (count % 2 != 0) {
+        // Sort array to group equal elements together
+        Arrays.sort(nums);
+
+        // Check consecutive pairs in sorted array
+        for (int pos = 0; pos < nums.length; pos += 2) {
+            // If any pair doesn't match, we can't form n equal pairs
+            if (nums[pos] != nums[pos + 1]) {
                 return false;
             }
         }
-        
+
+        // All pairs found successfully
         return true;
     }
 }
