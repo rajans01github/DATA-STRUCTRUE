@@ -3,8 +3,8 @@ class Solution {
         int maxcount = 0;
         int count = 0;
 
-        for(int i = 0 ; i < nums.length; i++){
-            if(nums[i] == 1){
+        for(int num : nums){
+            if(num == 1){
                 count++;
                 maxcount = Math.max(maxcount, count);
             }else {
