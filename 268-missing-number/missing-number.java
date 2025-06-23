@@ -3,11 +3,9 @@ class Solution {
         int n = nums.length;
         int xor = 0;
 
-        for(int i = 0 ; i < nums.length; i++){
-            xor ^= nums[i];
-            xor ^= i;
+        for(int i = 0; i < nums.length; i++){
+            xor ^= nums[i]^i;
         }
-
         xor ^= n;
         return xor;
     }
