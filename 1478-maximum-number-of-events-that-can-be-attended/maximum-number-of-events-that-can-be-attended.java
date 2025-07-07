@@ -1,31 +1,28 @@
 class Solution {
-    int search(int[] nextDay, int day) {
-        if (nextDay[day] != day) {
-            nextDay[day] = search(nextDay, nextDay[day]);
-        }
-        return nextDay[day];
-    }
-
     public int maxEvents(int[][] events) {
         Arrays.sort(events, (a, b) -> a[1] - b[1]);
-
-        int[] nextDay = new int[events[events.length - 1][1] + 2];
-        for (int d = 0; d < nextDay.length; d++) {
-            nextDay[d] = d;
-        }
-
-        int count = 0;
-        for (int[] evt : events) {
-            int start = evt[0];
-            int end = evt[1];
-            int day = search(nextDay, start);
-            if (day <= end) {
-                count++;
-                nextDay[day] = search(nextDay, day + 1);
+        
+        int[] root = new int[events[events.length - 1][1] + 2];
+        
+        for(int i=0;i<root.length;i++) 
+            root[i]=i;
+        
+        int res=0;
+        for(int[] e:events){
+            int availableSlot=find(root,e[0]);
+            
+            if(availableSlot<=e[1]){
+                res++;
+                root[availableSlot]=find(root,availableSlot+1);
             }
+            
         }
-
-        return count;
+        return res;
     }
-
+    
+    public int find(int[] root,int i){
+        if(root[i]!=i)
+            return root[i]=find(root,root[i]);
+        return i;
+    }
 }
