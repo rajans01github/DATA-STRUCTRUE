@@ -1,35 +1,24 @@
 class Solution {
-    private int[][] dp;
     public int maxValue(int[][] events, int k) {
-        Arrays.sort(events,(a,b)->a[0]-b[0]);
+        if(k == 1) {
+            int max = 0;
+            for(int[] event : events) max = Math.max(max, event[2]);
+            return max;
+        }
+        Arrays.sort(events, (a, b) -> Integer.compare(a[0], b[0]));
         int n = events.length;
-        dp = new int[k+1][n];
-        for(int[] row:dp){
-            Arrays.fill(row,-1);
+        int[][] dp = new int[n + 1][k + 1];
+        for(int i = n - 1; i >= 0; i--) {
+            int index = binarySearch(events, i + 1, n, events[i][1]);
+            for(int j = k - 1; j >= 0; j--) dp[i][j] = Math.max(dp[i + 1][j], dp[index][j + 1] + events[i][2]);
         }
-        return dfs(0,k,events);
+        return dp[0][0];
     }
-    private int dfs(int curIdx,int count,int[][] events){
-        if(count==0 || curIdx==events.length){
-            return 0;
-        }
-        if(dp[count][curIdx]!=-1){
-            return dp[count][curIdx];
-        }
-        int nxtIdx = bisectRight(events,events[curIdx][1]);
-        dp[count][curIdx] = Math.max(dfs(curIdx+1,count,events),events[curIdx][2]+dfs(nxtIdx,count-1,events));
-        return dp[count][curIdx];
-    }
-    private int bisectRight(int[][] events,int target){
-        int left = 0, right = events.length;
-        while(left<right){
-            int mid = (left+right)/2;
-            if(events[mid][0]<=target){
-                left = mid+1;
-            }
-            else{
-                right = mid;
-            }
+    private static int binarySearch(int[][] events, int left, int right, int target) {
+        while(left < right) {
+            int mid = (right - left) / 2 + left;
+            if(events[mid][0] > target) right = mid;
+            else left = mid + 1;
         }
         return left;
     }
