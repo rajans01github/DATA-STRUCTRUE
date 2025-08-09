@@ -1,12 +1,9 @@
 class Solution {
     public int removeDuplicates(int[] nums) {
-        int i = 0; // pointer to last unique value
-        for (int j = 1; j < nums.length; j++) {
-            if (nums[j] != nums[i]) {
-                i++;            // move to next unique spot
-                nums[i] = nums[j]; // copy new unique value
-            }
-        }
-        return i + 1; // total number of unique values
+        int j = 1;
+     for (int i = 1; i < nums.length; i++)
+     if (nums[i] != nums[i-1]) nums[j++] = nums[i];
+     return j; // new length
+
     }
 }
