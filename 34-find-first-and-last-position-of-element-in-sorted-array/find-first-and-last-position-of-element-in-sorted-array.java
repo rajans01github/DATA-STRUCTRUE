@@ -1,29 +1,30 @@
 class Solution {
-    public int findPosition(int[] nums, int target, boolean findFirst) {
-        int ans = -1;
-        int start = 0;
-        int end = nums.length - 1;
+    public int[] searchRange(int[] nums, int target) {
+         int first = findbound(nums, target, true);
+         int last = findbound(nums, target, false);
+        return new int[] { first, last};
+    }
 
-        while (start <= end) {
-            int mid = start + (end - start) / 2;
+    private int findbound(int[] nums, int target, boolean isfirst) {
+        int n = nums.length, low = 0, high = n-1;
+        int ans  = -1;
 
-            if (nums[mid] == target) {
+        while(low <= high){
+            int mid = low + (high - low) / 2;
+
+            if(nums[mid] == target){
                 ans = mid;
-                if (findFirst) {
-                    end = mid - 1;  // Move left to find first occurrence
-                } else {
-                    start = mid + 1; // Move right to find last occurrence
+                if(isfirst){
+                    high = mid - 1;
+                }else{
+                    low = mid + 1;
                 }
-            } else if (nums[mid] > target) {
-                end = mid - 1;
-            } else {
-                start = mid + 1;
+            }else if (nums[mid] < target){
+                low = mid + 1;
+            }else {
+                high = mid -1;
             }
         }
         return ans;
-    }
-
-    public int[] searchRange(int[] nums, int target) {
-        return new int[]{findPosition(nums, target, true), findPosition(nums, target, false)};
     }
 }
