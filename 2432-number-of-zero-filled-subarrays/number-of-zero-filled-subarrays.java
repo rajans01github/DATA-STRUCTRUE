@@ -1,10 +1,16 @@
 class Solution {
     public long zeroFilledSubarray(int[] nums) {
-        long cnt = 0, streak = 0;
+        long total = 0;
+        long count = 0;  // streak of consecutive zeros
+
         for (int num : nums) {
-            streak = (num == 0) ? streak + 1 : 0;
-            cnt += streak;
+            if (num == 0) {
+                count++;
+                total += count;  // add new subarrays ending here
+            } else {
+                count = 0;  // reset
+            }
         }
-        return cnt;
+        return total;
     }
 }
