@@ -1,15 +1,26 @@
 class Solution {
     public int singleNonDuplicate(int[] nums) {
-        int n = nums.length;
+         
+        int low  = 0; 
+        int high = nums.length - 1;
 
-        // Traverse the array in pairs
-        for (int i = 0; i < n - 1; i += 2) {
-            if (nums[i] != nums[i + 1]) {
-                return nums[i]; // Found the unique element
+        while (low < high) {
+            int mid  = low + (high - low) / 2;
+
+            // mid को हमेशा even index पर adjust करो
+            if (mid % 2 == 1) {
+                mid--;
+            }
+
+            // अगर pair सही है → unique element right side में
+            if (nums[mid] == nums[mid + 1]) {
+                low = mid + 2;
+            } else {
+                // unique element left side में (mid खुद भी हो सकता है)
+                high = mid;
             }
         }
 
-        // If the loop didn't return, the last element is unique
-        return nums[n - 1];
+        return nums[low];
     }
 }
