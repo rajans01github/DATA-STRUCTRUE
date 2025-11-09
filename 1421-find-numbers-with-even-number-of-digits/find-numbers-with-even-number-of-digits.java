@@ -1,13 +1,12 @@
 class Solution {
     public int findNumbers(int[] nums) {
-        int count = 0;
-        for (int x : nums) {
-            int digits = 0;
-            for (; x > 0; x /= 10)
-                digits++;
-            if ((digits & 1) == 0)
-                count++;
+        int evencount = 0;
+        
+        for (int num : nums) {
+            if ((num >= 10 && num <= 99) || (num >= 1000 && num <= 9999) || (num == 100000)) {
+                evencount++;
+            }
         }
-        return count;
+        return evencount;
     }
 }
