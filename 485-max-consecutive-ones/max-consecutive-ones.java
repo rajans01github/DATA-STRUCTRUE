@@ -5,14 +5,14 @@ class Solution {
 
        for(int i = 0; i<nums.length; i++)
        {
-        if(nums[i] != 1){
-            count = 0;
+        if(nums[i] == 1){
+            count += 1;
         }else{
-            count++;
             max = Math.max(max,count);
+            count = 0;
         }
 
        }
-       return max;
+       return Math.max(max,count);
     }
 }
